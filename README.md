@@ -1,58 +1,64 @@
+# ML Prediction API
 
-# Welcome to your CDK Python project!
+Serverless ML prediction system using AWS Lambda, API Gateway, and containerized models.
 
-This is a blank project for CDK development with Python.
+## Quick Start
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+```bash
+# Deploy API
+cd deployment
+python deploy_prediction_api.py
 
-This project is set up like a standard Python project.  The initialization
-process also creates a virtualenv within this project, stored under the `.venv`
-directory.  To create the virtualenv it assumes that there is a `python3`
-(or `python` for Windows) executable in your path with access to the `venv`
-package. If for any reason the automatic creation of the virtualenv fails,
-you can create the virtualenv manually.
+# Test API
+python test_prediction_api.py https://your-api-url/prod/predict
 
-To manually create a virtualenv on MacOS and Linux:
-
-```
-$ python -m venv .venv
-```
-
-After the init process completes and the virtualenv is created, you can use the following
-step to activate your virtualenv.
-
-```
-$ source .venv/bin/activate
+# Retrain models
+cd ../training
+python proper_ml_training.py
 ```
 
-If you are a Windows platform, you would activate the virtualenv like this:
+## API Usage
 
-```
-% .venv\Scripts\activate.bat
-```
+```bash
+# GET request
+curl "https://your-api-url/prod/predict?date=2025-10-20&cycle=Cycle1"
 
-Once the virtualenv is activated, you can install the required dependencies.
-
-```
-$ pip install -r requirements.txt
-```
-
-At this point you can now synthesize the CloudFormation template for this code.
-
-```
-$ cdk synth
+# POST request
+curl -X POST https://your-api-url/prod/predict \
+  -H "Content-Type: application/json" \
+  -d '{"date": "2025-10-20", "cycle": "Cycle1"}'
 ```
 
-To add additional dependencies, for example other CDK libraries, just add
-them to your `setup.py` file and rerun the `pip install -r requirements.txt`
-command.
+## Web Interface
 
-## Useful commands
+Open `web/index.html` in your browser for interactive predictions.
 
- * `cdk ls`          list all stacks in the app
- * `cdk synth`       emits the synthesized CloudFormation template
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk docs`        open CDK documentation
+## Architecture
 
-Enjoy!
+- **Lambda Function**: Containerized Python with ML models
+- **API Gateway**: RESTful API with CORS
+- **Models**: RandomForest + Lasso regression for predictions
+- **Data**: File audit logs + runtime measurements
+
+## Directory Structure
+
+```
+├── deployment/     # Deployment scripts
+├── training/       # Model training
+├── monitoring/     # Performance tracking
+├── web/           # Web interface
+├── lambda/        # Lambda code & models
+├── stacks/        # CDK infrastructure
+└── docs/          # Documentation
+```
+
+## Requirements
+
+- AWS CLI configured
+- Docker Desktop running
+- Node.js with CDK
+- Python 3.12+
+
+## Documentation
+
+See `docs/` folder for detailed guides on deployment, training, and monitoring.

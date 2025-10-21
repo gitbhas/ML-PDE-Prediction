@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Prediction API</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        .form-group { margin: 15px 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, button { padding: 8px; font-size: 14px; }
+        button { background: #007cba; color: white; border: none; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .results { margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 5px; }
+        .error { color: red; }
+        .loading { color: #007cba; }
+    </style>
+</head>
+<body>
+    <h1>ML Prediction API</h1>
+    
+    <form id="predictionForm">
+        <div class="form-group">
+            <label for="date">Date:</label>
+            <input type="date" id="date" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="cycle">Cycle:</label>
+            <select id="cycle">
+                <option value="">Both Cycles</option>
+                <option value="Cycle1">Cycle1</option>
+                <option value="Cycle3">Cycle3</option>
+            </select>
+        </div>
+        
+        <button type="submit">Get Predictions</button>
+    </form>
+    
+    <div id="results" class="results" style="display: none;"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>

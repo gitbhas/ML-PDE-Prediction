@@ -1,10 +1,66 @@
-*.swp
-package-lock.json
-__pycache__
-.pytest_cache
-.venv
-*.egg-info
+# CDK
+cdk.out/
+*.js
+*.d.ts
+node_modules/
 
-# CDK asset staging directory
-.cdk.staging
-cdk.out
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Model files (optional - remove if you want to include models)
+*.pkl
+
+# Data files (optional - remove if you want to include data)
+*.json
+*.csv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# AWS
+.aws/
+*.pem
+*.key
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Misc directory
+misc/
+layer/
