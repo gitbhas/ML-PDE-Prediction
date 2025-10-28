@@ -24,7 +24,22 @@ def load_models():
             print(f"Failed to load {filename}: {e}")
             return None
     
-    models['unified'] = load_model('enhanced_unified_model.pkl') or load_model('unified_file_volume_model.pkl')
+    # Try hypertuned models first, then fallback to original models
+    tuned_file_model = load_model('tuned_file_count_model.pkl')
+    tuned_volume_model = load_model('tuned_volume_model.pkl')
+    
+    if tuned_file_model and tuned_volume_model:
+        models['unified'] = {
+            'file_model': tuned_file_model,
+            'volume_model': tuned_volume_model,
+            'file_features': ['day_of_week', 'month', 'is_cycle1', 'is_weekend', 'is_monday', 'is_tuesday'],
+            'volume_features': ['day_of_week', 'month', 'is_cycle1', 'is_weekend', 'is_monday', 'is_tuesday', 'file_count']
+        }
+        print("Using hypertuned models")
+    else:
+        models['unified'] = load_model('enhanced_unified_model.pkl') or load_model('unified_file_volume_model.pkl')
+        print("Using original models")
+    
     models['runtime'] = load_model('enhanced_runtime_model.pkl') or load_model('best_runtime_model_lasso_regression.pkl')
     
     print(f"Models loaded: unified={models['unified'] is not None}, runtime={models['runtime'] is not None}")
