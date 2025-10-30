@@ -24,21 +24,7 @@ def load_models():
             print(f"Failed to load {filename}: {e}")
             return None
     
-    # Try hypertuned models first, then fallback to original models
-    tuned_file_model = load_model('tuned_file_count_model.pkl')
-    tuned_volume_model = load_model('tuned_volume_model.pkl')
-    
-    if tuned_file_model and tuned_volume_model:
-        models['unified'] = {
-            'file_model': tuned_file_model,
-            'volume_model': tuned_volume_model,
-            'file_features': ['day_of_week', 'month', 'is_cycle1', 'is_weekend', 'is_monday', 'is_tuesday'],
-            'volume_features': ['day_of_week', 'month', 'is_cycle1', 'is_weekend', 'is_monday', 'is_tuesday', 'file_count']
-        }
-        print("Using hypertuned models")
-    else:
-        models['unified'] = load_model('enhanced_unified_model.pkl') or load_model('unified_file_volume_model.pkl')
-        print("Using original models")
+    models['unified'] = load_model('enhanced_unified_model.pkl') or load_model('unified_file_volume_model.pkl')
     
     models['runtime'] = load_model('enhanced_runtime_model.pkl') or load_model('best_runtime_model_lasso_regression.pkl')
     
@@ -217,6 +203,20 @@ def get_predictions_api(models, actuals, target_date, cycle_type=None):
         # Get actuals
         actual_data = actuals.get(target_date, {}).get(cycle, {})
         
+        # Calculate precision (accuracy) if actuals are available
+        precision = {}
+        if actual_data.get('file_count') and pred_file_count:
+            file_error = abs(pred_file_count - actual_data['file_count']) / actual_data['file_count']
+            precision['file_count'] = max(0, 1 - file_error)
+        
+        if actual_data.get('volume') and pred_total_volume:
+            volume_error = abs(pred_total_volume - actual_data['volume']) / actual_data['volume']
+            precision['volume'] = max(0, 1 - volume_error)
+        
+        if actual_data.get('runtime') and pred_runtime:
+            runtime_error = abs(pred_runtime - actual_data['runtime']) / actual_data['runtime']
+            precision['runtime'] = max(0, 1 - runtime_error)
+        
         result = {
             'date': target_date,
             'day_name': day_name,
@@ -230,6 +230,11 @@ def get_predictions_api(models, actuals, target_date, cycle_type=None):
                 'file_count': actual_data.get('file_count'),
                 'volume': actual_data.get('volume'),
                 'runtime_minutes': actual_data.get('runtime')
+            },
+            'precision': {
+                'file_count': round(precision.get('file_count', 0) * 100, 1) if precision.get('file_count') else None,
+                'volume': round(precision.get('volume', 0) * 100, 1) if precision.get('volume') else None,
+                'runtime': round(precision.get('runtime', 0) * 100, 1) if precision.get('runtime') else None
             }
         }
         
